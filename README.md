@@ -1,9 +1,27 @@
 OberonSheet
 ===========
-Character Sheet for role-playing games.
-Will support HeroQuest at first (more games will be added)
+A character sheet for role-playing games.
+What is OberonSheet?
+--------------------
+It's just an excuse for me (the developer) to practice some MongoDB and Python.
 
-How to run it:
-==============
-run: "python index.py" in the terminal.
-*PYTHON has to be installed. http://www.python.org/getit/
+It's also a tool for role-playing game Masters and players, to get rid of those bothersome paper sheets stained with rubber marks and pencil marks.
+
+Features
+-----------------
+###Intended Features
+* Game settings
+* Character editor
+* Level-up tools
+* Inventory 
+
+###Actual Features
+* None yet...
+
+*Will update these in time as I make the intended features work... Please, take a seat.*
+
+Usage:
+--------------
+Run: "python index.py" in the terminal.
+
+*PYTHON has to be installed.* Get python [here](http://www.python.org/getit/) 
