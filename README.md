@@ -24,4 +24,8 @@ Usage:
 --------------
 Run: "python index.py" in the terminal.
 
-*PYTHON has to be installed.* Get python [here](http://www.python.org/getit/) 
+*Python and Bottle MUST be installed.* 
+
+Get Python [here](http://www.python.org/getit/) 
+
+Get Bottle [here](http://bottlepy.org/docs/dev/)
