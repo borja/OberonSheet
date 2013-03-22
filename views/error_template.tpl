@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head><meta charset="ISO-8859-15" />
-<title>Oberon -- Character sheet</title>
+<title>Oberon -- Character sheet -- ERROR</title>
 <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
 <link rel="stylesheet" href="/static/main.css" type="text/css" />
@@ -18,15 +18,8 @@
     </nav>
     <!-- main article -->
     <article>
-        <!-- Database-->
-        <h1>{{character['name']}}</h1>
-        <ul>
-            %for key in character:
-                %if key != 'name':
-                    <li><b>{{key.title()}}:</b> {{character[key].title()}}</li>
-                %end
-            %end
-        </ul>
+        <h1>ERROR</h1>
+        <p>Ooops! Something went wrong...</p>
     </article>
 
 <script>

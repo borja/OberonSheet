@@ -94,12 +94,12 @@
 		transition: all 600ms ease;
 	}
 
-	nav.clicked
+	nav.showing
 	{
 		top: 0;
 	}
 
-	nav.clicked ~ article
+	nav.showing ~ article
 	{
 		/*-webkit-transform: translateX(16em) perspective(600px) rotateY(10deg);
 		-moz-transform: translateX(16em) perspective(600px) rotateY(10deg);
@@ -113,7 +113,7 @@
 		transform: translateY(10em) perspective(600px);
 	}
 
-	nav.clicked ~ article:after
+	nav.showing ~ article:after
 	{
 		top: 50%;
 	}	
