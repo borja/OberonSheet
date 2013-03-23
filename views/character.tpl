@@ -13,22 +13,16 @@
     %include header_template
     <!-- main -->
 <section>
-    <h1>Characters</h1>
-        <!-- DB-->
-        %for character in characters:
-        <article class="main">
-            <h2><a href="/character/{{character['_id']}}">{{character['name']}}</a></h1>
-            <aside>Edit</aside>
-        </article>
+     <article class="char_info">
+        <h1>{{character['name']}}</h1>
+        <ul>
+        %for key in character:
+            %if key not in ['name', '_id']:
+            <li><b>{{ key }}:</b> {{character[key]}}</li>
+            %end
         %end
-        <!-- End of DB-->
-        <article class="main">
-            <a href=""><h2>New Character</h2></a>
-            <!-- UNDER CONSTRUCTION-->
-            <aside>Under construction...</aside>
-            <!-- UNDER CONSTRUCTION-->
-        </article>
-    <footer></footer>
+        </ul> 
+    </article>
 </section>
 
 <script>

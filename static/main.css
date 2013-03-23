@@ -6,7 +6,7 @@
 		top: 0;
 		right: 0;
 		bottom: 0;
-		padding: 30px 15%;
+		padding: 3em 15%;
 		background-color: #fff;
 		overflow: auto;
 		z-index: 0;
@@ -17,12 +17,33 @@
 		transform-origin: 0 50%;
 	}
 
+	section article.main {
+		position: relative;
+		float:left;
+		margin-right: 3em;
+		border: 1px dashed black;
+		width: 10em;
+		height:	9em;
+		text-align: center;
+	}
+
+	section article.main a:link, section article.main a:visited{
+		color: black;
+	}
+
+	section article.main aside {
+		position: absolute;
+		bottom:0;
+		text-align: left;
+		padding-left: .5em;
+	}
+
 	nav
 	{
 		position: fixed;
 		height: 128px;
 		left: 0;
-		top: -10em;
+		top: -8em;
 		right: 0;
 		background-color: #654;
 		border-bottom: 50px solid #765;
@@ -43,7 +64,7 @@
 		float: left;
 	}
 
-	nav a:link, nav a:visited {
+	nav a.nav:link, nav a.nav:visited {
 		font-family: sans-serif;
 		font-size: 100%;
 		display: block;
@@ -54,6 +75,12 @@
 		color: #ffc;
 		border-radius: 4px;
 		outline: 0 none;
+	}
+
+	nav a.title:link, nav a.title:visited{
+		text-decoration: none;
+		color: white;
+		padding-left: 1em;
 	}
 
 	/*END ESTILOS INICIALES*/
@@ -106,11 +133,11 @@
 		-ms-transform: translateX(16em) perspective(600px) rotateY(10deg);
 		-o-transform: translateX(16em) perspective(600px) rotateY(10deg);
 		transform: translateX(16em) perspective(600px) rotateY(10deg);*/
-		-webkit-transform: translateY(10em) perspective(600px);
-		-moz-transform: translateY(10em) perspective(600px);
-		-ms-transform: translateY(10em) perspective(600px);
-		-o-transform: translateY(10em) perspective(600px);
-		transform: translateY(10em) perspective(600px);
+		-webkit-transform: translateY(8em) perspective(600px);
+		-moz-transform: translateY(8em) perspective(600px);
+		-ms-transform: translateY(8em) perspective(600px);
+		-o-transform: translateY(8em) perspective(600px);
+		transform: translateY(8em) perspective(600px);
 	}
 
 	nav.showing ~ section:after
