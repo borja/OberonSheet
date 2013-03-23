@@ -1,4 +1,4 @@
-	article
+	section
 	{
 		position: fixed;
 		width: 70%;
@@ -59,7 +59,7 @@
 	/*END ESTILOS INICIALES*/
 
 	/*EVENTOS*/
-	article:after
+	section:after
 	{
 		position: absolute;
 		content: ' ';
@@ -85,7 +85,7 @@
 		border-top: 20px solid #765;
 	}
 
-	article, article:after, nav, nav *
+	section, section:after, nav, nav *
 	{
 		-webkit-transition: all 600ms ease;
 		-moz-transition: all 600ms ease;
@@ -99,7 +99,7 @@
 		top: 0;
 	}
 
-	nav.showing ~ article
+	nav.showing ~ section
 	{
 		/*-webkit-transform: translateX(16em) perspective(600px) rotateY(10deg);
 		-moz-transform: translateX(16em) perspective(600px) rotateY(10deg);
@@ -113,7 +113,7 @@
 		transform: translateY(10em) perspective(600px);
 	}
 
-	nav.showing ~ article:after
+	nav.showing ~ section:after
 	{
 		top: 50%;
 	}	

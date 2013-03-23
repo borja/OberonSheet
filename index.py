@@ -11,13 +11,20 @@ def index():
     characters = db.characters
 
     try:
-        character = characters.find_one({}, { "_id": 0})
-        print "Character name is ", character['name']
+        cursor = characters.find({}, { "_id": 0})
+        mychars = []
+        for character in cursor:
+            char_row = None
+            char_row = { 'name': character['name']}
+            for key in character:
+                print "atributo: " + key, character[key]
+                if key != 'name':
+                    char_row[key] = character[key]
+            mychars.append(char_row)
     except:
         print "Error al buscar en la DB ", sys.exc_info()[0]
         return bottle.template("error_template")
-    
-    return bottle.template("home", {"character": character})
+    return bottle.template("home", {"characters": mychars})
 
 @bottle.get('/internal_error')
 def error_screen():

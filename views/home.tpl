@@ -16,18 +16,24 @@
             <li><a href="">Muestrate desde arriba, Menu</a></li>
         </ul>
     </nav>
-    <!-- main article -->
+    <!-- main -->
+<section>
+    <h1>Characters</h1>
     <article>
         <!-- Database-->
-        <h1>{{character['name']}}</h1>
+        %for character in characters:
+        <h2>{{character['name']}}</h1>
         <ul>
             %for key in character:
                 %if key != 'name':
                     <li><b>{{key.title()}}:</b> {{character[key].title()}}</li>
                 %end
             %end
-        </ul>
+        </ul> 
+        %end
     </article>
+    <footer></footer>
+</section>
 
 <script>
     $('nav').click( function() {
