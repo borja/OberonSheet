@@ -13,15 +13,12 @@ def index():
     characters = db.characters
 
     try:
-        cursor = characters.find({}, {'_id': 1, 'name': 1})
+        cursor = characters.find({}, {'_id': 1, 'information.name': 1})
         mychars = []
         for character in cursor:
             char_row = None
-            char_row = { 'name': character['name']}
-            for key in character:
-                print "atributo: " + key, character[key]
-                if key != 'name':
-                    char_row[key] = character[key]
+            char_row = { 'name': character['information']['name']}
+            char_row['_id'] = character['_id']
             mychars.append(char_row)
     except:
         print "Error al buscar en la DB ", sys.exc_info()[0]
@@ -35,8 +32,8 @@ def show_character(_id_="notfound"):
     db = connection.oberon
     characters = db.characters
     try:
-        character = characters.find_one({'_id': ObjectId(_id_)})
-        print character
+        character = characters.find_one({'_id': ObjectId(_id_)}, { '_id': 0})
+        print "Looking for character ", character
     except:
         return bottle.template('error_template')
     return bottle.template("character", {'character': character})

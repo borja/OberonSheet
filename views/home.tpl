@@ -6,7 +6,6 @@
 
 <link rel="stylesheet" href="/static/main.css" type="text/css" />
 <script src="/static/jquery.js" ></script>
-
 </head>
 <body>
     <!-- menu -->
@@ -30,19 +29,6 @@
         </article>
     <footer></footer>
 </section>
-
-<script>
-    $('nav').click( function() {
-        if ($('nav').attr("class") == undefined)
-            $('nav').attr("class", "showing");
-        else
-            $('nav').removeAttr("class");
-    });
-
-    $('section').click( function(){
-        if ($('nav').attr("class") == "showing")
-            $('nav').removeAttr("class");
-    });
-</script>
+%include scripts_template
 </body>
 </html>

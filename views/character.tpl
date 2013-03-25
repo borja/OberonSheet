@@ -13,30 +13,23 @@
     %include header_template
     <!-- main -->
 <section>
-     <article class="char_info">
-        <h1>{{character['name']}}</h1>
+    <article class="char_info">
+        <h1>{{character['information']['name']}}</h1>
         <ul>
-        %for key in character:
-            %if key not in ['name', '_id']:
-            <li><b>{{ key }}:</b> {{character[key]}}</li>
+            %for key in character:
+            <li><b>{{ key.title() }}</b>
+                <ul>
+                    %for item in character[key]:
+                    %if item != 'name' :
+                    <li><b>{{ item.title() }}</b>: {{ character[key][item].title() }}</li>
+                    %end
+                    %end
+                </ul>
+            </li>
             %end
-        %end
         </ul> 
     </article>
 </section>
-
-<script>
-    $('nav').click( function() {
-        if ($('nav').attr("class") == undefined)
-            $('nav').attr("class", "showing");
-        else
-            $('nav').removeAttr("class");
-    });
-
-    $('section').click( function(){
-        if ($('nav').attr("class") == "showing")
-            $('nav').removeAttr("class");
-    });
-</script>
+%include scripts_template
 </body>
 </html>
