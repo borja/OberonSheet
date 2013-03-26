@@ -13,11 +13,11 @@ def index():
     characters = db.characters
 
     try:
-        cursor = characters.find({}, {'_id': 1, 'information.name': 1})
+        cursor = characters.find({}, {'_id': 1, 'name': 1})
         mychars = []
         for character in cursor:
             char_row = None
-            char_row = { 'name': character['information']['name']}
+            char_row = { 'name': character['name']}
             char_row['_id'] = character['_id']
             mychars.append(char_row)
     except:
@@ -37,6 +37,30 @@ def show_character(_id_="notfound"):
     except:
         return bottle.template('error_template')
     return bottle.template("character", {'character': character})
+
+#@bottle.get('/new_character')
+#def new_character():
+#    return bottle.template("new_character")
+
+@bottle.get('/new_character')
+def new_character():
+    return bottle.template("new_character")
+
+@bottle.post('/new_character')
+def post_new_character():
+    connection = pymongo.Connection(connection_string, safe=True)
+    db = connection.oberon
+    characters = db.characters
+
+    post_data = bottle.request.json
+    print "Entra"
+    print "Contenido ", post_data
+    try:
+        characters.insert(post_data, safe=True)
+        print "hero stored"
+    except:
+        print "oops, mongo error ", sys.exc_info()[0]
+
 
 ####
 @bottle.get('/internal_error')

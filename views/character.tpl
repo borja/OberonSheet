@@ -14,18 +14,18 @@
     <!-- main -->
 <section>
     <article class="char_info">
-        <h1>{{character['information']['name']}}</h1>
+        <h1>{{character['name']}}</h1>
         <ul>
             %for key in character:
+            %if key != 'name' :
             <li><b>{{ key.title() }}</b>
                 <ul>
                     %for item in character[key]:
-                    %if item != 'name' :
                     <li><b>{{ item.title() }}</b>: {{ character[key][item].title() }}</li>
-                    %end
                     %end
                 </ul>
             </li>
+            %end
             %end
         </ul> 
     </article>

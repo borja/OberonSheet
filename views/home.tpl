@@ -22,10 +22,7 @@
         %end
         <!-- End of DB-->
         <article class="main">
-            <a href=""><h2>New Character</h2></a>
-            <!-- UNDER CONSTRUCTION-->
-            <aside>Under construction...</aside>
-            <!-- UNDER CONSTRUCTION-->
+            <a href="/new_character"><h2>New Character</h2></a>
         </article>
     <footer></footer>
 </section>
