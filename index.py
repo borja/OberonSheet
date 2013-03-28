@@ -58,9 +58,10 @@ def post_new_character():
     try:
         characters.insert(post_data, safe=True)
         print "hero stored"
+        return "success"
     except:
         print "oops, mongo error ", sys.exc_info()[0]
-
+        return "error"
 
 ####
 @bottle.get('/internal_error')

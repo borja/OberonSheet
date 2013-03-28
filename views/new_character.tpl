@@ -5,14 +5,15 @@
 <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
 <link rel="stylesheet" href="/static/main.css" type="text/css" />
-<script src="/static/jquery.js" ></script>
+<link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css" media="screen" />
+<link rel="stylesheet" href="/static/bootstrap/css/bootstrap-responsive.min.css" media="screen" />
 
 </head>
 <body>
     <!-- menu -->
     %include header_template
     <!-- main -->
-<section>
+<section class="container">
     <form>
         <h1>Your Character</h1>
         <label for="character-name">Name</label> <input type="text" name="name" placeholder="e.g. Alastor" required />
@@ -21,10 +22,22 @@
             <label for="character-name">Gender:</label> <input type="text" name="gender" placeholder="e.g. Female" required />
             <label for="character-name">Class:</label> <input type="text" name="class" placeholder="e.g. Warrior" required />
         </fieldset>
-        <input type="submit" value="Send" />
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="Submit" />
+            <a href="/" class="btn">Cancel</a>
+        </div>
     </form>
 </section>
+<script src="/static/jquery.js" ></script>
+<script src="/static/bootstrap/js/bootstrap.min.js"></script>
 <script>
+    $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
     $('form').submit( function(event){
         event.preventDefault();
         //ENCODE FORM AS JSON
@@ -50,12 +63,22 @@
             data: tru_JSON,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            success: function(response){
-               console.log("success");
+            complete: function(response){
+               if (response.responseText == "success"){
+                    $('.btn-primary').addClass('btn-success');
+                    $('.btn-primary').val('Success')
+                    $('.btn', 'form-actions').attr('disabled', 'disabled');
+                    $('.btn-primary').removeClass('btn-primary');
+                }
+                else{
+                    $('.btn-primary').addClass('btn-danger');
+                    $('.btn-danger').text("Error")
+                    $('.btn-primary').removeClass('btn-primary');
+                }
             }
         });
+
     })
 </script>
-%include scripts_template
 </body>
 </html>
