@@ -38,13 +38,9 @@ def show_character(_id_="notfound"):
         return bottle.template('error_template')
     return bottle.template("character", {'character': character})
 
-#@bottle.get('/new_character')
-#def new_character():
-#    return bottle.template("new_character")
-
 @bottle.get('/new_character')
 def new_character():
-    return bottle.template("new_character")
+    return bottle.template("character_editor", character='')
 
 @bottle.post('/new_character')
 def post_new_character():
@@ -54,10 +50,39 @@ def post_new_character():
 
     post_data = bottle.request.json
     print "Entra"
-    print "Contenido ", post_data
+    print "NEW ", post_data
     try:
         characters.insert(post_data, safe=True)
         print "hero stored"
+        return "success"
+    except:
+        print "oops, mongo error ", sys.exc_info()[0]
+        return "error"
+
+@bottle.get('/edit_character/<_id_>')
+def edit_character(_id_="notfound"):
+    connection = pymongo.Connection(connection_string, safe=True)
+    db = connection.oberon
+    characters = db.characters
+    try:
+        character = characters.find_one({'_id': ObjectId(_id_)})
+    except:
+        return bottle.template('error_template')
+    return bottle.template('character_editor', character = character)
+
+@bottle.post('/edit_character')
+def post_edit_character():
+    connection = pymongo.Connection(connection_string, safe=True)
+    db = connection.oberon
+    characters = db.characters
+    post_data = bottle.request.json
+    _id_ = post_data['_id']
+    try:
+        print "EDIT", post_data
+        for section in post_data:
+            if type(post_data[section]) is dict:
+                for item in post_data[section]:
+                    characters.update({ '_id': ObjectId(_id_) }, { '$set': { section+'.'+item: post_data[section][item] } })
         return "success"
     except:
         print "oops, mongo error ", sys.exc_info()[0]
