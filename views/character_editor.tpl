@@ -118,17 +118,16 @@ function doNumber(json){
     keys.sort();
 
     for (i = 0; i < len; i++)
-    {
-        toReturn += '<option>';
+    {   toReturn += "<div style=\"margin-right: 5.5em; float: left;\">";
         k = keys[i];
-        if (i > 0 ) toReturn += '<hr>';
+        toReturn += '<h4>' + k.capitalize() + '</h4>';
         console.log(k + ':' + json[k]);
         for (z in json[k]){
-            
+            toReturn += '<label>' + json[k][z].capitalize() + '</label><input type="number" name="' + json[k][z] + '" />';
         }
-        toReturn += '</option>';
+        toReturn += "</div>";
     }
-    return '';
+    return toReturn;
 };
 
 function loadForm(JSONObject){
@@ -144,7 +143,7 @@ function loadForm(JSONObject){
                     add_html += doNumber(JSONObject[section]);
                 add_html += '</fieldset>';
             }
-            else
+            else if (section != 'name')
                 add_html += '<br><label>' + section.capitalize() + '</label><input name="' + section + '" />';
         }
         $('form').append(add_html);
