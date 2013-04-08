@@ -38,9 +38,31 @@ def show_character(_id_="notfound"):
         return bottle.template('error_template')
     return bottle.template("character", {'character': character})
 
+@bottle.get('/get_template')
+def get_template():
+    get_parameter = bottle.request.query['name']
+    connection = pymongo.Connection(connection_string, safe=True)
+    db = connection.oberon
+    templates = db.templates
+    try:
+        template = templates.find_one({'name': get_parameter}, {'_id': 0})
+        print template
+        return template
+    except:
+        return "error"
+    
+
 @bottle.get('/new_character')
 def new_character():
-    return bottle.template("character_editor", character='')
+    connection = pymongo.Connection(connection_string, safe=True)
+    db = connection.oberon
+    templates = db.templates
+    try:
+        template = templates.find_one()
+    except:
+        return bottle.template('error_template')
+
+    return bottle.template("character_editor", character='', template=template)
 
 @bottle.post('/new_character')
 def post_new_character():

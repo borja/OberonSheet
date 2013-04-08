@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css" media="screen" />
  <style>
       body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the navbar */
       }
 </style>
 <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-responsive.css" media="screen" />

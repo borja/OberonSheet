@@ -1,5 +1,5 @@
 %include header_template
-<section class="container">
+<section class="container" style="margin-bottom: 72px;">
     <h1>Characters</h1>
     <div class="row">
         <!-- DB-->

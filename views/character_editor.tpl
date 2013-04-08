@@ -16,16 +16,14 @@
 <section class="container">
     <form>
         %if character == '':
+        <!-- NEW CHARACTER -->
         <h1>New Character</h1>
         <input id="hidden_id" type="hidden" value="" />
         <input id="hidden" type="hidden" value="new" />
         <input style="font-size: 38.5px; line-height: 40px; height: 40px;" class="input-xlarge" type="text" name="name" placeholder="Name" required />
-        <fieldset>
-            <legend>Information</legend>
-            <label for="character-gender">Gender:</label> <input type="text" name="gender" placeholder="e.g. Female" required />
-            <label for="character-class">Class:</label> <input type="text" name="class" placeholder="e.g. Warrior" required />
-        </fieldset>
+        <!-- LOAD FORM WITH AJAX -->
         %else:
+        <!-- EDIT CHARACTER -->
         <h1>Edit Character</h1>
         <input id="hidden_id" type="hidden" value="{{ character['_id'] }}" />
         <input id="hidden" type="hidden" value="edit" />
@@ -61,118 +59,118 @@
 </div>
 <script src="/static/jquery.js" ></script>
 <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+<script src="/static/char_editor.js"></script>
 <script>
-//Records the state of the form when the page loads (edit mode)
-var original_form = new Object();
-if ($('#hidden').val() == 'edit'){
-     original_form['name'] = $("input[name='name']").val();
-     original_form['_id'] = $('#hidden_id').val();
-    $("form > fieldset").each(function() {
-        var section_name = $("legend", this).text();
-        var section = new Object();
-        $("input", this).each(function(){
-            var attr_name = $(this).attr('name');
-            var attr = $(this).val();
-            section[attr_name] = attr;
-        });
-        original_form[section_name] = section;
-    });
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-//Blocks submit by pressing enter
-$(window).keydown(function(event){
-    if(event.keyCode == 13) {
-        event.preventDefault();
-        return false;
+function isJSON(json){ //checks wether the parameter string is a valid JSON or not
+    try {
+        JSON.parse(JSON.stringify(json));
+    } catch (e) {
+        return -1;
     }
-});
+    return 1;
+};
 
-//Establishes if there's been a change in the input field (edit mode)
-$('input').focusout(function(){
-    if ($('#hidden').val() == 'edit'){
-        var input_name = $(this).attr('name');
-        var parent = $(this).siblings('legend').text();
-        if (original_form[parent][input_name] != $(this).val())
-            $(this).addClass("changed");
-    }
-});
+function isList(json){
+    var str = JSON.stringify(json);
+    if (str.substring(0,1) == '[')
+        return 1;
+    else
+        return -1;
+};
 
+function isDict(json){
+    var str = JSON.stringify(json);
+    if (str.substring(0,1) == '{')
+        return 1;
+    else
+        return -1;
+};
 
-$('form').submit( function(event){
-    event.preventDefault();
-    //ENCODE FORM AS JSON
-    var myJSON = new Object();
-    var changedCount = 0;
-
-    if ($('#hidden').val() == 'new') // New character
-        $("form > fieldset").each(function() {
-            var section_name = $("legend", this).text();
-            var section = new Object();
-            $("input", this).each(function(){
-                var attr_name = $(this).attr('name');
-                var attr = $(this).val();
-                section[attr_name] = attr;
-            });
-            myJSON[section_name] = section;
-        });
-    else //Editing character
-        $("form > fieldset").each(function() {
-            var section_name = $("legend", this).text();
-            var section = new Object();
-            $("input", this).each(function(){
-                if ($(this).hasClass('changed')){
-                    changedCount++;
-                    var attr_name = $(this).attr('name');
-                    var attr = $(this).val();
-                    section[attr_name] = attr;
-                }
-            });
-            myJSON[section_name] = section;
-        });
-    if (changedCount == 0 && $('#hidden').val() != 'new'){
-        $('#myModal').modal('show')
-        return; //no changes were made to the form
-    }
-
-    var url = '';
+function doInfo(json){
+    var toReturn = '<br><label>' + json['name'].capitalize() + '</label>' + //LABEL
+        '<' + json['tag'] + ' '; //OPEN TAG
+    var hayValues = false;
+    for (z in json)
+        if (z != 'tag' && z != 'values')
+            toReturn += z + '="' + json[z] + '" ';
+        else if (z == 'values')
+            hayValues = true;
+    toReturn += '>';
+    if (hayValues == true)
+        for (value in json['values'])
+            toReturn += '<option value="' + json['values'][value] + '">' + json['values'][value].capitalize() + '</option>';
+    toReturn += '</' + json['tag'] + '>';
     
+    return toReturn;
+};
+
+function doNumber(json){
+    var toReturn = '';
+    //first, order the json just in case
+    var myObj =
+        json,
+        keys = Object.keys(myObj),
+        i, len = keys.length;
+    keys.sort();
+
+    for (i = 0; i < len; i++)
+    {
+        toReturn += '<option>';
+        k = keys[i];
+        if (i > 0 ) toReturn += '<hr>';
+        console.log(k + ':' + json[k]);
+        for (z in json[k]){
+            
+        }
+        toReturn += '</option>';
+    }
+    return '';
+};
+
+function loadForm(JSONObject){
+    var add_html = '';
+    if ( isJSON(JSONObject) == 1){
+        for (section in JSONObject) {
+            if ( typeof(JSONObject[section]) == "object" && isJSON(JSONObject[section]) == 1 ){ //is JSON
+                add_html += '<fieldset><legend>'+section.capitalize()+'</legend>';
+                if ( section == 'information' )
+                    for (item in JSONObject[section])
+                        add_html += doInfo(JSONObject[section][item]);
+                else if ( section == 'attributes' )
+                    add_html += doNumber(JSONObject[section]);
+                add_html += '</fieldset>';
+            }
+            else
+                add_html += '<br><label>' + section.capitalize() + '</label><input name="' + section + '" />';
+        }
+        $('form').append(add_html);
+    }
+    else
+        $('form').append('<p>Error loading the form</p>');
+};
+
+$(document).ready(function() {
+
     if ($('#hidden').val() == 'new'){
-        myJSON['name'] = $("input[name='name']").val();
-        url = '/new_character';
-    }
-    else{
-        url = '/edit_character';
-        myJSON['_id'] = $('#hidden_id').val();
-        if ($("input[name='name']").hasClass('changed'))
-             myJSON['name'] = $("input[name='name']").val();
-    }
-
-    var tru_JSON = JSON.stringify(myJSON);
-
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: tru_JSON,
+        $.ajax({
+        type: 'GET',
+        url: '/get_template',
+        data: 'name=HeroQuest',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         complete: function(response){
-           if (response.responseText == "success"){
-                $('.btn-primary').addClass('btn-success');
-                $('.btn-primary').val('Success')
-                $('.btn-primary').attr('disabled', 'disabled');
-                $('#cancel').text("Volver");
-                $('.btn-primary').removeClass('btn-primary');
-            }
-            else{
-                $('.btn-primary').addClass('btn-danger');
-                $('.btn-danger').val("Error")
-                $('.btn').attr('disabled', 'disabled');
-                $('.btn-primary').removeClass('btn-primary');
-            }
+            loadForm(JSON.parse(response.responseText));
         }
-    });
+        });
+    }
 
-})
+});
+
+
 </script>
 </body>
 </html>
