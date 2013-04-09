@@ -118,33 +118,64 @@ function doNumber(json){
     keys.sort();
 
     for (i = 0; i < len; i++)
-    {   toReturn += "<div style=\"margin-right: 5.5em; float: left;\">";
+    {   
         k = keys[i];
-        toReturn += '<h4>' + k.capitalize() + '</h4>';
-        console.log(k + ':' + json[k]);
-        for (z in json[k]){
-            toReturn += '<label>' + json[k][z].capitalize() + '</label><input type="number" name="' + json[k][z] + '" />';
+        if (k != 'seq')
+        {
+            toReturn += "<div style=\"margin-right: 5.5em; float: left;\">";
+            toReturn += '<h4>' + k.capitalize() + '</h4>';
+            console.log(k + ':' + json[k]);
+            for (z in json[k]){
+                toReturn += '<label>' + json[k][z].capitalize() + '</label><input type="number" name="' + json[k][z] + '" />';
+            }
+            toReturn += "</div>";
         }
-        toReturn += "</div>";
     }
     return toReturn;
 };
 
+function orderSection(sections, json){
+    var objectString = '{';
+    var toReturn = [];
+    if (jQuery.inArray('information', sections))
+        objectString += ('"0": "information"');
+    else
+        return "no info section";
+
+    for (key in sections)
+        if (jQuery.inArray(sections[key], ['information', 'name']) == -1)
+        {
+            var sequence = json[sections[key]]['seq']
+            objectString += ', "' + sequence + '": "' + sections[key] + '"';
+        }
+    objectString += '}';
+    var myJSON = JSON.parse(objectString),
+                    keys = Object.keys(myJSON),
+                    len = keys.length;
+    keys.sort();
+
+    for (var i = 0; i < len; i++)
+        toReturn.push(myJSON[keys[i]]);
+
+    return toReturn;
+}
+
 function loadForm(JSONObject){
     var add_html = '';
+    var sections = orderSection(Object.keys(JSONObject), JSONObject);
     if ( isJSON(JSONObject) == 1){
-        for (section in JSONObject) {
-            if ( typeof(JSONObject[section]) == "object" && isJSON(JSONObject[section]) == 1 ){ //is JSON
-                add_html += '<fieldset><legend>'+section.capitalize()+'</legend>';
-                if ( section == 'information' )
-                    for (item in JSONObject[section])
-                        add_html += doInfo(JSONObject[section][item]);
-                else if ( section == 'attributes' )
-                    add_html += doNumber(JSONObject[section]);
+        for (key in sections) {
+            if ( typeof(JSONObject[sections[key]]) == "object" && isJSON(JSONObject[sections[key]]) == 1 ){ //is JSON
+                add_html += '<fieldset><legend>'+sections[key].capitalize()+'</legend>';
+                if ( sections[key] == 'information' )
+                    for (item in JSONObject[sections[key]])
+                        add_html += doInfo(JSONObject[sections[key]][item]);
+                else if ( sections[key] == 'attributes' )
+                    add_html += doNumber(JSONObject[sections[key]]);
                 add_html += '</fieldset>';
             }
-            else if (section != 'name')
-                add_html += '<br><label>' + section.capitalize() + '</label><input name="' + section + '" />';
+            else if (sections[key] != 'name')
+                add_html += '<br><label>' + sections[key].capitalize() + '</label><input name="' + sections[key] + '" />';
         }
         $('form').append(add_html);
     }
