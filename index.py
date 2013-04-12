@@ -2,6 +2,7 @@ import bottle
 import pymongo
 from bson.objectid import ObjectId
 import sys
+import json
 
 connection_string = "mongodb://localhost"
 
@@ -44,12 +45,19 @@ def get_template():
     connection = pymongo.Connection(connection_string, safe=True)
     db = connection.oberon
     templates = db.templates
+    ordered = {}
+    to_return = {}
     try:
         template = templates.find_one({'name': get_parameter}, {'_id': 0})
-        print template
-        return template
-    except:
-        return "error"
+        for key in template:
+            if key != 'name':
+                ordered[int(template[key]['seq'])] =  key
+        to_return['template'] = template
+        to_return['order'] = ordered
+        return to_return
+    except: 
+        print "error"
+        print sys.exc_info()[0]
     
 
 @bottle.get('/new_character')

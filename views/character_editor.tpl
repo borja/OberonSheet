@@ -39,10 +39,6 @@
             %end
         %end
         %end
-        <footer class="form-actions">
-            <input type="submit" class="btn btn-primary" value="Submit" />
-            <a href="/" id="cancel" class="btn">Cancel</a>
-        </footer>
     </form>
 </section>
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -65,123 +61,84 @@ String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-function isJSON(json){ //checks wether the parameter string is a valid JSON or not
-    try {
-        JSON.parse(JSON.stringify(json));
-    } catch (e) {
-        return -1;
-    }
-    return 1;
-};
-
-function isList(json){
-    var str = JSON.stringify(json);
-    if (str.substring(0,1) == '[')
-        return 1;
-    else
-        return -1;
-};
-
-function isDict(json){
-    var str = JSON.stringify(json);
-    if (str.substring(0,1) == '{')
-        return 1;
-    else
-        return -1;
-};
-
 function doInfo(json){
-    var toReturn = '<br><label>' + json['name'].capitalize() + '</label>' + //LABEL
-        '<' + json['tag'] + ' '; //OPEN TAG
-    var hayValues = false;
-    for (z in json)
-        if (z != 'tag' && z != 'values')
-            toReturn += z + '="' + json[z] + '" ';
-        else if (z == 'values')
-            hayValues = true;
-    toReturn += '>';
-    if (hayValues == true)
-        for (value in json['values'])
-            toReturn += '<option value="' + json['values'][value] + '">' + json['values'][value].capitalize() + '</option>';
-    toReturn += '</' + json['tag'] + '>';
-    
-    return toReturn;
-};
-
-function doNumber(json){
     var toReturn = '';
-    //first, order the json just in case
-    var myObj =
-        json,
-        keys = Object.keys(myObj),
-        i, len = keys.length;
-    keys.sort();
-
-    for (i = 0; i < len; i++)
-    {   
-        k = keys[i];
-        if (k != 'seq')
-        {
-            toReturn += "<div style=\"margin-right: 5.5em; float: left;\">";
-            toReturn += '<h4>' + k.capitalize() + '</h4>';
-            console.log(k + ':' + json[k]);
-            for (z in json[k]){
-                toReturn += '<label>' + json[k][z].capitalize() + '</label><input type="number" name="' + json[k][z] + '" />';
-            }
-            toReturn += "</div>";
-        }
+    if (json['tag'] != 'h4'){
+        toReturn += '<label>' + json['name'].capitalize() + '</label>'; //LABEL if tag != h4
+        toReturn += '<' + json['tag'] + ' '; //OPEN TAG
+        var hayValues = false;
+        for (z in json)
+            if (z != 'tag' && z != 'values')
+                toReturn += z + '="' + json[z] + '" ';
+            else if (z == 'values')
+                hayValues = true;
+        toReturn += '>';
+        if (hayValues == true)
+            for (value in json['values'])
+                toReturn += '<option value="' + json['values'][value] + '">' + json['values'][value].capitalize() + '</option>';
+        toReturn += '</' + json['tag'] + '>';    
+    }else{
+        toReturn += '<h4>' + json['name'].capitalize() + '</h4>';
     }
+    toReturn += '<br>';
     return toReturn;
 };
-
-function orderSection(sections, json){
-    var objectString = '{';
-    var toReturn = [];
-    if (jQuery.inArray('information', sections))
-        objectString += ('"0": "information"');
-    else
-        return "no info section";
-
-    for (key in sections)
-        if (jQuery.inArray(sections[key], ['information', 'name']) == -1)
-        {
-            var sequence = json[sections[key]]['seq']
-            objectString += ', "' + sequence + '": "' + sections[key] + '"';
-        }
-    objectString += '}';
-    var myJSON = JSON.parse(objectString),
-                    keys = Object.keys(myJSON),
-                    len = keys.length;
-    keys.sort();
-
-    for (var i = 0; i < len; i++)
-        toReturn.push(myJSON[keys[i]]);
-
-    return toReturn;
-}
 
 function loadForm(JSONObject){
     var add_html = '';
-    var sections = orderSection(Object.keys(JSONObject), JSONObject);
-    if ( isJSON(JSONObject) == 1){
-        for (key in sections) {
-            if ( typeof(JSONObject[sections[key]]) == "object" && isJSON(JSONObject[sections[key]]) == 1 ){ //is JSON
-                add_html += '<fieldset><legend>'+sections[key].capitalize()+'</legend>';
-                if ( sections[key] == 'information' )
-                    for (item in JSONObject[sections[key]])
-                        add_html += doInfo(JSONObject[sections[key]][item]);
-                else if ( sections[key] == 'attributes' )
-                    add_html += doNumber(JSONObject[sections[key]]);
-                add_html += '</fieldset>';
-            }
-            else if (sections[key] != 'name')
-                add_html += '<br><label>' + sections[key].capitalize() + '</label><input name="' + sections[key] + '" />';
+    var sections = JSONObject['order'];
+    var template = JSONObject['template'];
+    //builds tab navigator
+    add_html += loadFormNav(sections);
+    add_html += '<div id="myTabContent" class="tab-content">';
+    for (var i in sections){
+        var section = sections[i];
+        add_html +=  '<fieldset id="' + section+ '" class="tab-pane fade';
+        if (i == '0')
+            add_html += ' active in">';
+        else
+            add_html += '">';
+        var key_order = {};
+        for (key in template[section]['fields']){
+            var seq = template[section]['fields'][key]['seq'];
+            key_order[seq] = key;
         }
-        $('form').append(add_html);
+        var h_counter = 0;
+        for (key in key_order){
+            if (template[section]['fields'][key_order[key]]['tag'] == 'h4'){
+                //sub-sections separated by div, side to side. h_counter counts the number of sub-sections
+                if ( h_counter > 0)
+                    add_html += '</div>';
+                add_html += '<div style="float:left; margin-right:5.5em;">';
+                h_counter++;
+            }
+            
+            add_html += doInfo(template[section]['fields'][key_order[key]]);
+        }
+        if (h_counter > 0)
+            add_html += '</div>';
+        add_html += '</fieldset>';
     }
-    else
-        $('form').append('<p>Error loading the form</p>');
+    add_html += '</div>';
+    $('form').append(add_html);
+    //add buttons at the end
+    $('form').append('<footer class="form-actions"><input type="submit" class="btn btn-primary" Submit" /><a href="/" id="cancel" class="btn">Cancel</a></footer>');
 };
+
+function loadFormNav(JSONObject){
+    var add_html = '<ul class="nav nav-tabs">';
+    var counter = 0;
+    for (key in JSONObject){
+        if (counter == 0)
+            add_html += '<li class="active">';
+        else
+            add_html += '<li class="">';
+        add_html += '<a href="#' + JSONObject[key] + '" data-toggle="tab">' + JSONObject[key].capitalize() + '</a></li>';
+        counter++;
+    }
+    add_html += '</ul>';
+    return add_html;
+}
 
 $(document).ready(function() {
 
@@ -192,9 +149,14 @@ $(document).ready(function() {
         data: 'name=HeroQuest',
         contentType: "application/json; charset=utf-8",
         dataType: "json",
-        complete: function(response){
+        complete: function(response){//load form builder
             loadForm(JSON.parse(response.responseText));
         }
+        });
+
+        $('#myTab a').click(function (e) {
+            e.preventDefault();
+            $(this).tab('show');
         });
     }
 
