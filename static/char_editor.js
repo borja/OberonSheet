@@ -3,13 +3,16 @@ var original_form = new Object();
 if ($('#hidden').val() == 'edit'){
      original_form['name'] = $("input[name='name']").val();
      original_form['_id'] = $('#hidden_id').val();
-    $("form > fieldset").each(function() {
-        var section_name = $("legend", this).text();
+    $("form fieldset").each(function() {
+        var section_name = $(this).attr('id');
         var section = new Object();
-        $("input", this).each(function(){
-            var attr_name = $(this).attr('name');
-            var attr = $(this).val();
-            section[attr_name] = attr;
+        $(this).children().each(function(){
+            var tagName = $(this).prop('tagName');
+            if ( $.inArray(tagName, ['BR', 'LABEL']) == -1) {
+                var attr_name = $(this).attr('name');
+                var attr = $(this).val();
+                section[attr_name] = attr;
+            }
         });
         original_form[section_name] = section;
     });
@@ -41,30 +44,35 @@ $('form').submit( function(event){
     var changedCount = 0;
 
     if ($('#hidden').val() == 'new') // New character
-        $("form > fieldset").each(function() {
-            var section_name = $("legend", this).text();
+        $('form fieldset').each(function() {
+            var section_name = $(this).attr('id');
             var section = new Object();
-            $("input", this).each(function(){
-                var attr_name = $(this).attr('name');
-                var attr = $(this).val();
-                section[attr_name] = attr;
+            $(this).find(':not(br, label, div, h4, option)').each(function(){
+                var tagName = $(this).prop('tagName');
+                var name = $(this).attr('name');
+                var value = $(this).val();                
+                section[name] = value;    
             });
             myJSON[section_name] = section;
         });
     else //Editing character
-        $("form > fieldset").each(function() {
-            var section_name = $("legend", this).text();
+        $("form fieldset").each(function() {
+            var section_name = $(this).attr('id');
             var section = new Object();
-            $("input", this).each(function(){
-                if ($(this).hasClass('changed')){
-                    changedCount++;
-                    var attr_name = $(this).attr('name');
-                    var attr = $(this).val();
-                    section[attr_name] = attr;
+            $(this).children().each(function(){
+                var tagName = $(this).prop('tagName');
+                if ( $.inArray(tagName, ['BR', 'LABEL']) == -1) {
+                    if ($(this).hasClass('changed')){
+                        changedCount++;
+                        var attr_name = $(this).attr('name');
+                        var attr = $(this).val();
+                        section[attr_name] = attr;
+                    }
                 }
             });
             myJSON[section_name] = section;
         });
+
     if (changedCount == 0 && $('#hidden').val() != 'new'){
         $('#myModal').modal('show')
         return; //no changes were made to the form

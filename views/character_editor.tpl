@@ -122,7 +122,7 @@ function loadForm(JSONObject){
     add_html += '</div>';
     $('form').append(add_html);
     //add buttons at the end
-    $('form').append('<footer class="form-actions"><input type="submit" class="btn btn-primary" Submit" /><a href="/" id="cancel" class="btn">Cancel</a></footer>');
+    $('form').append('<footer class="form-actions"><input type="submit" class="btn btn-primary" value="Submit"/><a href="/" id="cancel" class="btn">Cancel</a></footer>');
 };
 
 function loadFormNav(JSONObject){
