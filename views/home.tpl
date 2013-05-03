@@ -9,7 +9,7 @@
             <a style="width: 207px" href="/character/{{character['_id']}}" class="thumbnail">
                 <img data-src="holder.js/207x180" alt="207x180" style="width: 207px; height: 180px;" >
             </a>
-            <aside><a href="/edit_character/{{character['_id']}}">Edit</a></aside>
+            <aside><a href="/edit_character2/{{character['_id']}}">Edit</a></aside>
         </article>
         <div class="span1"></div>
         %end

@@ -79,7 +79,6 @@ def post_new_character():
     characters = db.characters
 
     post_data = bottle.request.json
-    print "Entra"
     print "NEW ", post_data
     try:
         characters.insert(post_data, safe=True)
@@ -88,6 +87,20 @@ def post_new_character():
     except:
         print "oops, mongo error ", sys.exc_info()[0]
         return "error"
+
+@bottle.get('/edit_character2/<_id_>')
+def edit_character2(_id_="notfound"):
+    connection = pymongo.Connection(connection_string, safe=True)
+    db = connection.oberon
+    templates = db.templates
+    characters = db.characters
+    try:
+        character = characters.find_one({'_id': ObjectId(_id_)})
+        template = templates.find_one({'name': "HeroQuest"}, {'_id': 0})
+    except:
+        print "oops, mongo error al intentar pillar algo ", sys.exc_info()[0]
+        return bottle.template('error_template')
+    return bottle.template('character_editor2', character = character, template=template)
 
 @bottle.get('/edit_character/<_id_>')
 def edit_character(_id_="notfound"):
